@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import styles from '../styles/styles'
 
 
-const ENDPOINT = "http://localhost:4000/"
+const ENDPOINT = "https://marketsphere-socket.onrender.com/"
 
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] })
 

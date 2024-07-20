@@ -10,7 +10,7 @@ import socketIO from 'socket.io-client'
 import { format } from 'timeago.js'
 // import { text } from 'express'
 
-const ENDPOINT = "http://localhost:4000/"
+const ENDPOINT = "https://marketsphere-socket.onrender.com/"
 
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] })
 
