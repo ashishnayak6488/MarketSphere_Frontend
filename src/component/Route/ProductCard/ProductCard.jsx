@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from '../../../styles/styles'
-import { AiFillHeart, AiFillStar, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineStar } from 'react-icons/ai'
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineStar } from 'react-icons/ai'
 import ProductDetailsCard from '../ProductDetailsCard/ProductDetailsCard.jsx'
-import { backend_url } from '../../../server.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToWishlist, removeFromWishlist } from '../../../redux/actions/wishlist.js'
 import { toast } from 'react-toastify'
@@ -19,6 +18,24 @@ const ProductCard = ({ data, isEvent }) => {
     const [open, setOpen] = useState(false)
 
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (wishlist && wishlist.find((i) => i._id === data._id)) {
+            setClick(true)
+        }
+        else {
+            setClick(false)
+        }
+    }, [wishlist])
+
+    const removeFromWishlistHandler = (data) => {
+        setClick(!click)
+        dispatch(removeFromWishlist(data))
+    }
+    const addToWishlistHandler = (data) => {
+        setClick(!click)
+        dispatch(addToWishlist(data))
+    }
 
 
     const addToCartHandler = (id) => {
@@ -40,24 +57,6 @@ const ProductCard = ({ data, isEvent }) => {
         }
     }
 
-    useEffect(() => {
-        if (wishlist && wishlist.find((i) => i._id === data._id)) {
-            setClick(true)
-        }
-        else {
-            setClick(false)
-        }
-    }, [wishlist])
-
-    const removeFromWishlistHandler = (data) => {
-        setClick(!click)
-        dispatch(removeFromWishlist(data))
-    }
-    const addToWishlistHandler = (data) => {
-        setClick(!click)
-        dispatch(addToWishlist(data))
-    }
-
 
     return (
         <>
@@ -67,7 +66,7 @@ const ProductCard = ({ data, isEvent }) => {
                 </div>
                 <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
                     <img
-                        src={`${backend_url}${data.images && data.images[0]}`}
+                        src={`${data.images && data.images[0]?.url}`}
                         alt=""
                         className='w-full h-[170px] object-contain' />
                 </Link>
@@ -86,7 +85,7 @@ const ProductCard = ({ data, isEvent }) => {
                         <div className="flex">
                             <h5 className={`${styles.productDiscountPrice}`}>
                                 {
-                                    data.originalPrice === 0 ? data.price : data.discountPrice
+                                    data.originalPrice === 0 ? data?.originalPrice : data?.discountPrice
                                 }
                                 $
 
@@ -100,7 +99,7 @@ const ProductCard = ({ data, isEvent }) => {
 
                         <span className='font-[400] text-[17px] text-[#68d284]'>
                             {
-                                data.sold_out
+                                data?.sold_out
                             } sold
                         </span>
 

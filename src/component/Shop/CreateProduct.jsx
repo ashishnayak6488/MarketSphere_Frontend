@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { categoriesData } from '../../static/data'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { createProduct } from '../../redux/actions/product'
@@ -28,19 +28,36 @@ const CreateProduct = () => {
         }
         if (success) {
             toast.success("Product Created Successfully")
-            navigate('/dashboard');
+            navigate('/dashboard-products');
             window.location.reload()
 
         }
 
     }, [dispatch, error, success])
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+
+        setImages([]);
+
+        files.forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setImages((old) => [...old, reader.result]);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault()
         const newForm = new FormData();
 
         images.forEach((image) => {
-            newForm.append('images', image)
+            newForm.set('images', image)
         })
         newForm.append('name', name)
         newForm.append('description', description)
@@ -51,15 +68,20 @@ const CreateProduct = () => {
         newForm.append('stock', stock)
         newForm.append('shopId', seller._id)
 
-        dispatch(createProduct(newForm))
+        dispatch(createProduct({
+            name,
+            description,
+            category,
+            tags,
+            originalPrice,
+            discountPrice,
+            stock,
+            shopId: seller._id,
+            images,
+        }))
     }
 
-    const handleImageChange = (e) => {
-        e.preventDefault()
 
-        let files = Array.from(e.target.files)
-        setImages((prevImages) => [...prevImages, ...files])
-    }
 
     return (
         <div className='w-[90%] 800px:w-[60%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll'>
@@ -209,7 +231,7 @@ const CreateProduct = () => {
                         {
                             images && images.map((i) => (
                                 <img
-                                    src={URL.createObjectURL(i)}
+                                    src={i}
                                     key={i}
                                     alt=""
                                     className='h-[120px] w-[120px] object-cover m-2'

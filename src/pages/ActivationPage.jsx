@@ -13,13 +13,12 @@ const ActivationPage = () => {
         if (activation_token) {
             const sendRequest = async () => {
                 try {
-                    await axios.post(`${server}/user/activation/`, {
+                    await axios.post(`${server}/user/activation`, {
                         activation_token,
                     }).then((res) => {
-                        console.log(res.data.message)
+                        console.log(res)
                     })
                 } catch (error) {
-                    console.log(error.response.data.message)
                     setError(true)
                 }
             }

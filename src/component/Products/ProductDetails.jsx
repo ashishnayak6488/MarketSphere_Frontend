@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import styles from '../../styles/styles'
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai'
-import { backend_url, server } from '../../server'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 import { getAllProductsShop } from '../../redux/actions/product'
+import styles from '../../styles/styles'
+import { server } from '../../server'
 import { addToWishlist, removeFromWishlist } from '../../redux/actions/wishlist'
 import { toast } from 'react-toastify'
 import { addToCart } from '../../redux/actions/cart'
@@ -23,9 +23,6 @@ const ProductDetails = ({ data }) => {
     const [select, setSelect] = useState(0)
 
     const navigate = useNavigate();
-
-    // const { events } = useSelector((state) => state.events);
-    // const { id } = useParams();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -66,8 +63,6 @@ const ProductDetails = ({ data }) => {
         }
     }
 
-    console.log("These are our Products", products)
-
     const decreamentCount = () => {
         if (count > 1) {
             setCount(count - 1)
@@ -77,10 +72,6 @@ const ProductDetails = ({ data }) => {
         setCount(count + 1)
     }
 
-    // console.log(user._id)
-    // console.log(data._id)
-    // console.log(data.shop._id)
-
     const handleMessageSubmit = async () => {
         if (isAuthenticated) {
             const groupTitle = data._id + user._id
@@ -89,7 +80,7 @@ const ProductDetails = ({ data }) => {
             await axios.post(`${server}/conversation/create-new-conversation`, {
                 groupTitle, userId, sellerId
             }).then((res) => {
-                navigate(`/conversation/${res.data.conversation._id}`)
+                navigate(`/inbox?${res.data.conversation._id}`)
             }).catch((error) => {
                 toast.error(error.response.data.message)
             })
@@ -102,9 +93,9 @@ const ProductDetails = ({ data }) => {
     const totalReiewsLength = products && products.reduce((acc, product) => acc + product.reviews.length, 0)
     const totalRatings = products && products.reduce((acc, product) => acc + product.reviews.reduce((sum, review) => sum + review.rating, 0), 0)
 
-    const averageRating = totalRatings / totalReiewsLength || 0;
+    const avg = totalRatings / totalReiewsLength || 0;
 
-    console.log("Products", products)
+    const averageRating = avg.toFixed(2);
 
     return (
         <div className='bg-white'>
@@ -115,7 +106,7 @@ const ProductDetails = ({ data }) => {
                             <div className="block w-full 800px:flex">
                                 <div className='w-full 800px:w-[50%]'>
                                     <img
-                                        src={`${backend_url}${data && data.images[select]}`}
+                                        src={`${data && data.images[select]?.url}`}
                                         alt=""
                                         className='w-[80%] h-[35%]' />
                                     <div className="w-full flex justify-around mt-10">
@@ -123,7 +114,7 @@ const ProductDetails = ({ data }) => {
                                             data && data.images.map((i, index) => (
                                                 <div className={`${select === 0 ? "border" : null} cursor-pointer`}>
                                                     <img
-                                                        src={`${backend_url}${i}`}
+                                                        src={`${i?.url}`}
                                                         alt=""
                                                         className='h-[100px] w-auto mt-3 mr-3 px-5'
                                                         onClick={() => setSelect(index)}
@@ -213,7 +204,7 @@ const ProductDetails = ({ data }) => {
                                     <div className="flex items-center pt-8">
                                         <Link to={`/shop/preview/${data?.shop._id}`}>
                                             <img
-                                                src={`${backend_url}${data?.shop?.avatar}`}
+                                                src={`${data?.shop?.avatar?.url}`}
                                                 alt=""
                                                 className='w-[50px] h-[50px] rounded-full mr-2'
                                             />
@@ -333,13 +324,15 @@ const ProductDetailsInfo = ({ data, products, totalReiewsLength, averageRating }
                         {
                             data && data.reviews.map((item, index) => (
                                 <div className='w-full flex my-2'>
-                                    <img src={`${backend_url}${item.user.avatar} `} alt=""
+                                    <img
+                                        src={`${item?.user?.avatar?.url}`}
+                                        alt=""
                                         className='w-[50px] h-[50px] rounded-full'
                                     />
                                     <div className='pl-2'>
                                         <div className="w-full flex items-center">
                                             <h1 className='font-[500] mr-3'>
-                                                {item.user.name}
+                                                {item?.user?.name}
                                             </h1>
                                             <Ratings rating={data?.ratings} />
                                         </div>
@@ -372,7 +365,7 @@ const ProductDetailsInfo = ({ data, products, totalReiewsLength, averageRating }
                             <Link to={`/shop/preview/${data.shop._id}`}>
                                 <div className="flex items-center">
                                     <img
-                                        src={`${backend_url}${data?.shop?.avatar}`}
+                                        src={`${data?.shop?.avatar?.url}`}
                                         alt=""
                                         className='w-[50px] h-[50px] rounded-full'
                                     />

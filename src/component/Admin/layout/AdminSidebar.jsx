@@ -1,15 +1,12 @@
 import React from 'react'
-import { AiOutlineFolder, AiOutlineGift } from 'react-icons/ai'
-import { FiPackage, FiShoppingBag } from 'react-icons/fi'
-import { MdOutlineLocalOffer } from 'react-icons/md'
+import { FiShoppingBag } from 'react-icons/fi'
+import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from 'react-icons/rx'
-import { VscNewFile } from 'react-icons/vsc'
 import { CiMoneyBill, CiSettings } from 'react-icons/ci'
 import { Link } from 'react-router-dom'
-import { BiMessageSquareDetail } from 'react-icons/bi'
-import { GrWorkshop } from "react-icons/gr";
 import { HiOutlineUserGroup } from 'react-icons/hi'
 import { BsHandbag } from 'react-icons/bs'
+import { MdOutlineLocalOffer } from 'react-icons/md'
 
 const AdminSidebar = ({ active }) => {
     return (
@@ -18,7 +15,7 @@ const AdminSidebar = ({ active }) => {
             {/* single item */}
 
             <div className="w-full flex items-center p-4">
-                <Link to='admin/dashboard'
+                <Link to='/admin/dashboard'
                     className='w-full flex items-center'
 
                 >
@@ -97,7 +94,7 @@ const AdminSidebar = ({ active }) => {
                         color={`${active === 5 ? "crimson" : "#555"}`}
                     />
                     <h5 className={`pl-2 text-[18px] font-[400] ${active === 5 ? "text-[crimson]" : "text-[#555]"} hidden 800px:block`}>
-                        All Product
+                        All Products
 
                     </h5>
                 </Link>
@@ -143,7 +140,7 @@ const AdminSidebar = ({ active }) => {
             </div>
 
             <div className="w-full flex items-center p-4">
-                <Link to='/settings'
+                <Link to='/admin-setting'
                     className='w-full flex items-center'
 
                 >

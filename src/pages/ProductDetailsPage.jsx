@@ -3,7 +3,6 @@ import Header from '../component/layout/Header'
 import Footer from '../component/layout/Footer/Footer'
 import ProductDetails from '../component/Products/ProductDetails.jsx'
 import { useParams, useSearchParams } from 'react-router-dom'
-// import { productData } from '../static/data.js'
 import SuggestedProduct from '../component/Products/SuggestedProduct.jsx'
 import { useSelector } from 'react-redux'
 
@@ -38,7 +37,11 @@ const ProductDetailsPage = () => {
             <Header />
             <ProductDetails data={data} />
             {
-                data && <SuggestedProduct data={data} /> // if related product have any issue then we will remove it for the events
+                !eventData && (
+                    <>
+                        {data && <SuggestedProduct data={data} />}
+                    </>
+                )
             }
             <Footer />
         </div>

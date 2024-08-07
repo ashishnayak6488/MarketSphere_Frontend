@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../layout/Loader'
 import { DataGrid } from '@mui/x-data-grid'
-import { AiOutlineDelete, AiOutlineEye } from 'react-icons/ai'
+import { AiOutlineEye } from 'react-icons/ai'
 import { Button } from '@mui/material'
 import { Link } from 'react-router-dom'
-import { deleteEvent, getAllEventsShop } from '../../redux/actions/event'
 import axios from 'axios'
 import { server } from '../../server'
 
 const AdminEvents = () => {
 
 
-    const [data, setdata] = useState([])
+    const [events, setEvents] = useState([]);
 
     useEffect(() => {
 
         axios.get(`${server}/event/admin-all-events`, { withCredentials: true }).then((res) => {
-            setdata(res.data.events)
+            setEvents(res.data.events)
         })
-
-
-
     }, [])
 
 
@@ -82,14 +76,14 @@ const AdminEvents = () => {
 
     const row = [];
 
-    data &&
-        data.forEach((item) => {
+    events &&
+        events.forEach((item) => {
             row.push({
-                id: item._id,
-                name: item.name,
-                price: "US$ " + item.discountPrice,
-                Stock: item.stock,
-                sold: item.sold_out,
+                id: item?._id,
+                name: item?.name,
+                price: "US$ " + item?.discountPrice,
+                Stock: item?.stock,
+                sold: item?.sold_out,
             });
         });
 

@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 const AdminWithdraw = () => {
 
     const [data, setData] = useState([])
-    const [withdrawData, setWithdrawData] = useState([])
+    const [withdrawData, setWithdrawData] = useState()
     const [open, setOpen] = useState(false)
     const [withdrawStatus, setWithdrawStatus] = useState("Processing")
 
@@ -28,7 +28,7 @@ const AdminWithdraw = () => {
             sellerId: withdrawData.shopId
         }, { withCredentials: true }).then((res) => {
             toast.success("Withdraw request updated successfully")
-            setData(res.data.withdraw)
+            setData(res.data.withdraws)
             setOpen(false)
         })
 
@@ -74,7 +74,7 @@ const AdminWithdraw = () => {
         {
             field: " ",
             flex: 0.8,
-            minWidth: 100,
+            minWidth: 130,
             headerName: "Update Status",
             type: "text",
             sortable: false,
@@ -85,7 +85,7 @@ const AdminWithdraw = () => {
 
 
                     <BsPencil size={20}
-                        className={`${params.row.status !== "Processing" ? 'hidden' : 'block'} mr-5 cursor-pointer`}
+                        className={`${params.row.status !== "Processing" ? 'hidden' : ' '} mr-5 cursor-pointer`}
                         onClick={() => setOpen(true) || setWithdrawData(params.row)}
 
                     />
@@ -103,12 +103,12 @@ const AdminWithdraw = () => {
     data &&
         data.forEach((item) => {
             row.push({
-                id: item._id,
-                shopId: item.seller._id,
-                name: item.seller.name,
-                amount: "US$ " + item.amount,
-                status: item.status,
-                createdAt: item.createdAt.slice(0, 10),
+                id: item?._id,
+                shopId: item?.seller._id,
+                name: item?.seller.name,
+                amount: "US$ " + item?.amount,
+                status: item?.status,
+                createdAt: item?.createdAt.slice(0, 10),
             });
         });
 

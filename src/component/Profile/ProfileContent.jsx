@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { backend_url, server } from '../../server'
-import { useDispatch, useSelector } from 'react-redux'
 import { AiOutlineArrowRight, AiOutlineCamera, AiOutlineDelete } from 'react-icons/ai'
+import { server } from '../../server'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from '../../styles/styles'
 import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button';
@@ -34,8 +34,8 @@ const ProfileContent = ({ active }) => {
             dispatch({ type: 'clearErrors' })
         }
         if (successMessage) {
-            toast.success(successMessage.successMessage) //here one time or two time successMessage ??
-            dispatch({ type: 'clearErrors' })
+            toast.success(successMessage) //here one time or two time successMessage ??
+            dispatch({ type: 'clearMessages' })
         }
 
     }, [error, successMessage])
@@ -48,24 +48,30 @@ const ProfileContent = ({ active }) => {
 
 
     const handleImage = async (e) => {
-        const file = e.target.files[0];
-        setAvatar(file)
+        const reader = new FileReader();
 
-        const formData = new FormData()
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setAvatar(reader.result);
+                axios
+                    .put(
+                        `${server}/user/update-avatar`,
+                        { avatar: reader.result },
+                        {
+                            withCredentials: true,
+                        }
+                    ).then((response) => {
+                        dispatch(loadUser());
+                        toast.success("avatar updated successfully!");
+                    })
+                    .catch((error) => {
+                        toast.error(error);
+                    });
+            }
+        };
 
-        formData.append('image', e.target.files[0])
-
-        await axios.put(`${server}/user/update-avatar`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }, withCredentials: true,
-        }).then((response) => {
-            dispatch(loadUser())
-            toast.success("Profile pic updated successfully")
-        }).catch((error) => {
-            toast.error(error)
-        })
-    }
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
 
 
@@ -77,7 +83,10 @@ const ProfileContent = ({ active }) => {
                     <>
                         <div className='flex justify-center w-full'>
                             <div className="relative">
-                                <img src={`${backend_url}${user?.avatar}`} alt="" className='800px:h-[150px] h-[120px] 800px:w-[150px] w-[120px] rounded-full object-cover border-[3px] border-[#3ad132]' />
+                                <img
+                                    src={`${user?.avatar?.url}`}
+                                    alt=""
+                                    className='800px:h-[150px] h-[120px] 800px:w-[150px] w-[120px] rounded-full object-cover border-[3px] border-[#3ad132]' />
 
                                 <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
                                     <input type="file" id='image'
@@ -238,7 +247,7 @@ const AllOrders = () => {
 
     useEffect(() => {
         dispatch(getAllOrdersOfUser(user._id))
-    })
+    }, [])
 
     const columns = [
         { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -271,13 +280,17 @@ const AllOrders = () => {
             minWidth: 150,
             headerName: "Actions",
             sortable: false,
-            renderCell: (params) => (
-                <Link to={`/user/order/${params.id}`}>
-                    <Button>
-                        <AiOutlineArrowRight size={20} />
-                    </Button>
-                </Link>
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Link to={`/user/order/${params.id}`}>
+                            <Button>
+                                <AiOutlineArrowRight size={20} />
+                            </Button>
+                        </Link>
+                    </>
+                );
+            },
         },
     ];
 
@@ -286,10 +299,10 @@ const AllOrders = () => {
     orders &&
         orders.forEach((item) => {
             row.push({
-                id: item._id,
-                itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
-                status: item.status,
+                id: item?._id,
+                itemsQty: item?.cart.length,
+                total: "US$ " + item?.totalPrice,
+                status: item?.status,
             });
         });
 
@@ -353,13 +366,17 @@ const AllRefundOrders = () => {
             minWidth: 150,
             headerName: "Actions",
             sortable: false,
-            renderCell: (params) => (
-                <Link to={`/user/order/${params.id}`}>
-                    <Button>
-                        <AiOutlineArrowRight size={20} />
-                    </Button>
-                </Link>
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Link to={`/user/order/${params.id}`}>
+                            <Button>
+                                <AiOutlineArrowRight size={20} />
+                            </Button>
+                        </Link>
+                    </>
+                );
+            },
         },
     ];
 
@@ -368,10 +385,10 @@ const AllRefundOrders = () => {
     eligibleOrders &&
         eligibleOrders.forEach((item) => {
             row.push({
-                id: item._id,
-                itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
-                status: item.status,
+                id: item?._id,
+                itemsQty: item?.cart.length,
+                total: "US$ " + item?.totalPrice,
+                status: item?.status,
             });
         });
 
@@ -399,7 +416,7 @@ const TrackOrder = () => {
 
     useEffect(() => {
         dispatch(getAllOrdersOfUser(user._id))
-    })
+    }, [])
 
     const columns = [
         { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -432,13 +449,18 @@ const TrackOrder = () => {
             minWidth: 150,
             headerName: "Actions",
             sortable: false,
-            renderCell: (params) => (
-                <Link to={`/user/track/order/${params.id}`}>
-                    <Button>
-                        <MdOutlineTrackChanges size={20} />
-                    </Button>
-                </Link>
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Link to={`/user/track/order/${params.id}`}>
+                            <Button>
+                                <MdOutlineTrackChanges size={20} />
+                            </Button>
+                        </Link>
+                    </>
+                );
+            },
+
         },
     ];
 
@@ -447,10 +469,10 @@ const TrackOrder = () => {
     orders &&
         orders.forEach((item) => {
             row.push({
-                id: item._id,
-                itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
-                status: item.status,
+                id: item?._id,
+                itemsQty: item?.cart.length,
+                total: "US$ " + item?.totalPrice,
+                status: item?.status,
             });
         });
 
@@ -497,7 +519,7 @@ const ChangePassword = () => {
     return (
         <div className='w-full px-5'>
             <h1 className='text-[25px] block text-center font-[600] text-[#000000ba] pb-2'>
-                Payment Methods
+                Change Password
             </h1>
             <div className="w-full">
                 <form aria-required onSubmit={passwordChangeHandler}

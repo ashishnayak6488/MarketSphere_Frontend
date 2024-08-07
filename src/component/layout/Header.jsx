@@ -9,7 +9,6 @@ import { BiMenuAltLeft } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
 import DropDown from './DropDown.jsx'
 import Navbar from './Navbar.jsx'
-import { backend_url } from '../../server.js'
 import Cart from '../Cart/Cart.jsx'
 import Wishlist from '../Wishlist/Wishlist.jsx'
 import { RxCross1 } from 'react-icons/rx'
@@ -31,8 +30,6 @@ const Header = ({ activeHeading }) => {
     const [openCart, setOpenCart] = useState(false)
     const [openWishlist, setOpenWishlist] = useState(false)
     const [open, setOpen] = useState(false)
-
-    console.log(allProducts)
 
     const handleSearchChange = (e) => {
         const term = e.target.value;
@@ -82,7 +79,7 @@ const Header = ({ activeHeading }) => {
                                                 <Link to={`/product/${i._id}`}>
                                                     <div className="w-full flex items-start py-3">
                                                         <img
-                                                            src={`${backend_url}${i.images[0]}`}
+                                                            src={`${i.images[0]?.url}`}
                                                             alt=""
                                                             className='w-[40px] h-[40px] mr-[10px]' />
                                                         <h1>{i.name}</h1>
@@ -171,7 +168,11 @@ const Header = ({ activeHeading }) => {
                                 {
                                     isAuthenticated ? (
                                         <Link to='/profile'>
-                                            <img src={`${backend_url}${user.avatar}`} alt="" className='h-[35px] w-[35px] rounded-full' />
+                                            <img
+                                                src={`${user?.avatar?.url}`}
+                                                alt=""
+                                                className='h-[35px] w-[35px] rounded-full'
+                                            />
 
                                         </Link>
                                     ) : (
@@ -335,7 +336,9 @@ const Header = ({ activeHeading }) => {
                                     {
                                         isAuthenticated ? (
                                             <Link to='/profile'>
-                                                <img src={`${backend_url}${user.avatar}`} alt=""
+                                                <img
+                                                    src={`${user.avatar?.url}`}
+                                                    alt=""
                                                     className='h-[60px] w-[60px] rounded-full border-[3px] border-[#0d681e]'
                                                 />
 

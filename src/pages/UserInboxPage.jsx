@@ -6,7 +6,7 @@ import { TfiGallery } from 'react-icons/tfi'
 import socketIO from 'socket.io-client'
 import { format } from 'timeago.js'
 import axios from 'axios'
-import { backend_url, server } from '../server'
+import { server } from '../server'
 import { useNavigate } from 'react-router-dom'
 import styles from '../styles/styles'
 
@@ -162,22 +162,19 @@ const UserInboxPage = () => {
 
     const handleImageUpload = async (e) => {
 
-        const file = e.target.files[0]
-        setImages(file)
+        const reader = new FileReader();
 
-        imageSendingHandler(file)
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setImages(reader.result);
+                imageSendingHandler(reader.result);
+            }
+        };
 
-    }
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
     const imageSendingHandler = async (e) => {
-
-
-        const formData = new FormData()
-
-        formData.append("images", e)
-        formData.append("sender", user._id)
-        formData.append("text", newMessage)
-        formData.append("conversationId", currentChat._id)
 
         const receiverId = currentChat.members.find((member) => member !== user._id)
 
@@ -189,7 +186,12 @@ const UserInboxPage = () => {
         })
 
         try {
-            await axios.post(`${server}/message/create-new-message`, formData)
+            await axios.post(`${server}/message/create-new-message`, {
+                images: e,
+                sender: user._id,
+                text: newMessage,
+                conversationId: currentChat._id,
+            })
                 .then((res) => {
                     setImages()
                     setMessages([...messages, res.data.message]);
@@ -211,7 +213,6 @@ const UserInboxPage = () => {
                 lastMessageId: user._id,
             })
             .then((res) => {
-                console.log(res.data.conversation);
                 setNewMessage("");
             })
             .catch((error) => {
@@ -319,7 +320,8 @@ const MessageList = ({ data, index, setOpen, me, setCurrentChat, userData, setUs
             }
         >
             <div className="relative">
-                <img src={`${backend_url}${user?.avatar}`}
+                <img
+                    src={`${user?.avatar?.url}`}
                     alt=""
                     className='w-[50px] h-[50px] rounded-full border'
                 />
@@ -357,7 +359,8 @@ const SellerInbox = ({ setOpen, newMessage, setNewMessage, sendMessageHandler, s
             <div className="w-full flex p-3 items-center justify-between bg-slate-200">
 
                 <div className='flex'>
-                    <img src={`${backend_url}${userData?.avatar}`}
+                    <img
+                        src={`${userData?.avatar?.url}`}
                         alt=""
                         className='w-[50px] h-[50px] rounded-full border'
                     />
@@ -389,7 +392,8 @@ const SellerInbox = ({ setOpen, newMessage, setNewMessage, sendMessageHandler, s
                         <div className={`flex w-full my-2 ${item.sender === sellerId ? 'justify-end' : 'justify-start'}`} ref={scrollRef}>
                             {
                                 item.sender !== sellerId && (
-                                    <img src={`${backend_url}${userData?.avatar}`}
+                                    <img
+                                        src={`${userData?.avatar?.url}`}
                                         alt=""
                                         className='w-[40px] h-[40px] rounded-full mr-3 border'
                                     />
@@ -398,7 +402,8 @@ const SellerInbox = ({ setOpen, newMessage, setNewMessage, sendMessageHandler, s
 
                             {
                                 item.images && (
-                                    <img src={`${backend_url}${item.images}`}
+                                    <img
+                                        src={`${item.images?.url}`}
                                         alt=""
                                         className='w-[300px] h-[300px] object-cover rounded-[10px] ml-2 mb-2'
                                     />

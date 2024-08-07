@@ -4,7 +4,7 @@ import { BsFillBagFill } from 'react-icons/bs'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllOrdersOfShop } from '../../redux/actions/order'
-import { backend_url, server } from '../../server'
+import { server } from '../../server'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -21,7 +21,7 @@ const OrderDetails = () => {
 
     useEffect(() => {
         dispatch(getAllOrdersOfShop(seller._id))
-    }, [dispatch, seller._id])
+    }, [dispatch])
 
     const data = orders && orders.find((item) => item._id === id)
 
@@ -82,7 +82,8 @@ const OrderDetails = () => {
             {
                 data && data?.cart.map((item, index) => (
                     <div className='w-full flex items-start mb-5'>
-                        <img src={`${backend_url}${item.images[0]}`}
+                        <img
+                            src={`${item.images[0]?.url}`}
                             alt=""
                             className='w-[80px] h-[80px]'
                         />

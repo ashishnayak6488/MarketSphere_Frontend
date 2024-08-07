@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { productData } from '../../static/data'
 import ProductCard from '../Route/ProductCard/ProductCard'
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +6,6 @@ import { getAllProductsShop } from "../../redux/actions/product";
 import styles from "../../styles/styles";
 import { getAllEventsShop } from "../../redux/actions/event";
 import Ratings from "../Products/Ratings";
-import { backend_url } from "../../server";
 
 
 const ShopProfileData = ({ isOwner }) => {
@@ -118,7 +116,7 @@ const ShopProfileData = ({ isOwner }) => {
                         allReviews.map((item, index) => (
                             <div className="w-full flex my-4">
                                 <img
-                                    src={`${backend_url}${item.user.avatar}`}
+                                    src={`${item.user.avatar?.url}`}
                                     className="w-[50px] h-[50px] rounded-full"
                                     alt=""
                                 />

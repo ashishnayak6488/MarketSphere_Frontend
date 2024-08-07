@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { AiOutlineArrowRight, AiOutlineMoneyCollect } from 'react-icons/ai'
+import React, { useEffect } from 'react'
 import styles from '../../styles/styles'
-import { Link } from 'react-router-dom'
+import { AiOutlineMoneyCollect } from 'react-icons/ai'
 import { MdBorderClear } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 import { DataGrid } from '@mui/x-data-grid'
-import { Button } from '@mui/material'
-import axios from 'axios'
-import { server } from '../../server'
+// import { Button } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllOrdersOfAdmin } from '../../redux/actions/order'
 import Loader from '../layout/Loader'
@@ -14,17 +12,14 @@ import { getAllSellers } from '../../redux/actions/seller'
 
 const AdminDashboardMain = () => {
 
-    const { adminOrders, isLoading } = useSelector((state) => state.order)
+    const { adminOrders, adminOrderLoading } = useSelector((state) => state.order)
     const { sellers } = useSelector((state) => state.seller)
-
-    // const [orders, setOrders] = useState([])
 
     const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(getAllOrdersOfAdmin())
         dispatch(getAllSellers())
-        // setOrders(adminOrders)
     }, [])
 
     const adminEarning = adminOrders && adminOrders.reduce((acc, item) => acc + item.totalPrice * .10, 0)
@@ -82,7 +77,7 @@ const AdminDashboardMain = () => {
     return (
         <>
             {
-                isLoading ? (
+                adminOrderLoading ? (
                     <Loader />
                 ) : (
                     <div className='w-full p-8'>
@@ -117,7 +112,7 @@ const AdminDashboardMain = () => {
                                     </h3>
                                 </div>
                                 <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{sellers && sellers.length}</h5>
-                                <Link to="/dashboard-seller">
+                                <Link to="/admin-sellers">
                                     <h5 className="pt-4 pl-2 text-[#077f9c]">View Sellers</h5>
                                 </Link>
                             </div>
@@ -136,7 +131,7 @@ const AdminDashboardMain = () => {
                                     </h3>
                                 </div>
                                 <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{adminOrders && adminOrders.length}</h5>
-                                <Link to="/dashboard-orders">
+                                <Link to="/admin-orders">
                                     <h5 className="pt-4 pl-2 text-[#077f9c]">View Orders</h5>
                                 </Link>
                             </div>

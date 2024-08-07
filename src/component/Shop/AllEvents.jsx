@@ -23,6 +23,7 @@ const AllEvents = () => {
     const handleDelete = (id) => {
         dispatch(deleteEvent(id))
         window.location.reload()
+        console.log("Event Deleted successfully")
     }
 
 

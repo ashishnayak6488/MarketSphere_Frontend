@@ -42,9 +42,6 @@ const AdminUsers = () => {
             headerName: "Name",
             minWidth: 130,
             flex: 0.7,
-            cellClassName: (params) => {
-                return params.row.status === "Delivered" ? "greenColor" : "redColor";
-            },
         },
         {
             field: "email",
@@ -74,12 +71,15 @@ const AdminUsers = () => {
             headerName: "Delete User",
             type: "number",
             sortable: false,
-            renderCell: (params) => (
-                <Button onClick={() => setUserId(params.id) || setOpen(true)}>
-                    <AiOutlineDelete size={20} />
-                </Button>
-
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Button onClick={() => setUserId(params.id) || setOpen(true)}>
+                            <AiOutlineDelete size={20} />
+                        </Button>
+                    </>
+                );
+            },
         },
     ];
 

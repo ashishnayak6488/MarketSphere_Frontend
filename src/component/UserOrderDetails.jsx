@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getAllOrdersOfUser } from '../redux/actions/order'
 import styles from '../styles/styles'
 import { BsFillBagFill } from 'react-icons/bs'
-import { backend_url, server } from '../server'
+import { server } from '../server'
 import { RxCross1 } from 'react-icons/rx'
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 import axios from 'axios'
@@ -12,7 +12,6 @@ import { toast } from 'react-toastify'
 
 const UserOrderDetails = () => {
     const { orders } = useSelector((state) => state.order)
-    const { seller } = useSelector((state) => state.seller)
     const { user } = useSelector((state) => state.user)
 
     const dispatch = useDispatch()
@@ -24,7 +23,7 @@ const UserOrderDetails = () => {
 
     useEffect(() => {
         dispatch(getAllOrdersOfUser(user._id))
-    }, [dispatch])
+    }, [dispatch, user._id])
 
     const data = orders && orders.find((item) => item._id === id)
 
@@ -82,27 +81,30 @@ const UserOrderDetails = () => {
             <br />
             <br />
             {
-                data && data?.cart.map((item, index) => (
-                    <div className='w-full flex items-start mb-5'>
-                        <img src={`${backend_url}${item.images[0]}`}
-                            alt=""
-                            className='w-[80px] h-[80px]'
-                        />
-                        <div className='w-full'>
-                            <h5 className="pl-3 text-[20px]">{item.name}</h5>
-                            <h5 className="pl-3 text-[20px] text-[#00000091]">US${item.discountPrice} * {item.qty}</h5>
+                data && data?.cart.map((item, index) => {
+                    return (
+                        <div className='w-full flex items-start mb-5'>
+                            <img
+                                src={`${item.images[0]?.url}`}
+                                alt=""
+                                className='w-[80px] h-[80px]'
+                            />
+                            <div className='w-full'>
+                                <h5 className="pl-3 text-[20px]">{item.name}</h5>
+                                <h5 className="pl-3 text-[20px] text-[#00000091]">US${item.discountPrice} * {item.qty}</h5>
 
+                            </div>
+                            {!item.isReviewed && data?.status === "Delivered" ? <div
+                                className={`${styles.button} text-[#fff]`}
+                                onClick={() => setOpen(true) || setSelectedItem(item)}
+                            >
+                                Write a review
+                            </div> : (
+                                null
+                            )}
                         </div>
-                        {!item.isReviewed && data?.status === "Delivered" ? <div
-                            className={`${styles.button} text-[#fff]`}
-                            onClick={() => setOpen(true) || setSelectedItem(item)}
-                        >
-                            Write a review
-                        </div> : (
-                            null
-                        )}
-                    </div>
-                ))
+                    )
+                })
             }
 
             {/* review pop up */}
@@ -122,7 +124,7 @@ const UserOrderDetails = () => {
                         <br />
                         <div className="w-full flex">
                             <img
-                                src={`${backend_url}${selectedItem?.images[0]}`}
+                                src={`${selectedItem?.images[0]?.url}`}
                                 alt=""
                                 className="w-[80px] h-[80px]"
                             />
@@ -250,23 +252,12 @@ const UserOrderDetails = () => {
 
             </div>
 
-            <Link to='/'>
+            <Link to={`/inbox?${id}`}>
                 <div className={`${styles.button} text-white`}>
                     Send Message
 
                 </div>
             </Link>
-
-
-
-
-
-
-
-
-
-
-
         </div>
     )
 }

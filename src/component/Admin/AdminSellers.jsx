@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllUsers } from '../../redux/actions/user';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -43,9 +42,7 @@ const AdminSellers = () => {
             headerName: "Name",
             minWidth: 130,
             flex: 0.7,
-            cellClassName: (params) => {
-                return params.row.status === "Delivered" ? "greenColor" : "redColor";
-            },
+
         },
         {
             field: "email",
@@ -75,14 +72,18 @@ const AdminSellers = () => {
             headerName: "Preview Shop",
             type: "text",
             sortable: false,
-            renderCell: (params) => (
-                <Link to={`/shop/preview/${params.id}`}>
-                    <Button>
-                        <AiOutlineEye size={20} />
-                    </Button>
-                </Link>
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Link to={`/shop/preview/${params.id}`}>
+                            <Button>
+                                <AiOutlineEye size={20} />
+                            </Button>
+                        </Link>
+                    </>
+                );
 
-            ),
+            },
         },
 
         {
@@ -92,12 +93,15 @@ const AdminSellers = () => {
             headerName: "Delete Seller",
             type: "number",
             sortable: false,
-            renderCell: (params) => (
-                <Button onClick={() => setUserId(params.id) || setOpen(true)}>
-                    <AiOutlineDelete size={20} />
-                </Button>
-
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Button onClick={() => setUserId(params.id) || setOpen(true)}>
+                            <AiOutlineDelete size={20} />
+                        </Button>
+                    </>
+                );
+            },
         },
     ];
 

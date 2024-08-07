@@ -56,13 +56,17 @@ const AllRefundOrders = () => {
             minWidth: 150,
             headerName: "Actions",
             sortable: false,
-            renderCell: (params) => (
-                <Link to={`/order/${params.id}`}>
-                    <Button>
-                        <AiOutlineArrowRight size={20} />
-                    </Button>
-                </Link>
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Link to={`/order/${params.id}`}>
+                            <Button>
+                                <AiOutlineArrowRight size={20} />
+                            </Button>
+                        </Link>
+                    </>
+                );
+            },
         },
     ];
 

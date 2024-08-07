@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Form, useNavigate } from 'react-router-dom'
-import { categoriesData } from '../../static/data'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { categoriesData } from '../../static/data'
 import { toast } from 'react-toastify'
 import { createEvent } from '../../redux/actions/event'
 
@@ -43,7 +43,8 @@ const CreateEvent = () => {
 
     const today = new Date().toISOString().slice(0, 10)
 
-    const minEndDate = startDate ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) : today
+    const minEndDate = startDate ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) :
+        "";
 
     useEffect(() => {
         if (error) {
@@ -58,12 +59,29 @@ const CreateEvent = () => {
 
     }, [dispatch, error, success])
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+
+        setImages([]);
+
+        files.forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setImages((old) => [...old, reader.result]);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault()
         const newForm = new FormData();
 
         images.forEach((image) => {
-            newForm.append('images', image)
+            newForm.set('images', image)
         })
         newForm.append('name', name)
         newForm.append('description', description)
@@ -75,16 +93,22 @@ const CreateEvent = () => {
         newForm.append('shopId', seller._id)
         newForm.append('start_Date', startDate.toISOString())
         newForm.append('Finish_Date', endDate.toISOString())
+        dispatch(createEvent({
+            name,
+            description,
+            category,
+            tags,
+            originalPrice,
+            discountPrice,
+            stock,
+            images,
+            shopId: seller._id,
+            start_Date: startDate?.toISOString(),
+            Finish_Date: endDate?.toISOString(),
+        }));
+    };
 
-        dispatch(createEvent(newForm))
-    }
 
-    const handleImageChange = (e) => {
-        e.preventDefault()
-
-        let files = Array.from(e.target.files)
-        setImages((prevImages) => [...prevImages, ...files])
-    }
 
     return (
         <div className='w-[90%] 800px:w-[60%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll'>
@@ -272,7 +296,7 @@ const CreateEvent = () => {
                         {
                             images && images.map((i) => (
                                 <img
-                                    src={URL.createObjectURL(i)}
+                                    src={i}
                                     key={i}
                                     alt=""
                                     className='h-[120px] w-[120px] object-cover m-2'

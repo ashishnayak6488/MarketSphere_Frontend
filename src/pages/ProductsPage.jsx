@@ -12,8 +12,6 @@ const ProductsPage = () => {
     const [searchParams] = useSearchParams();
     const categoryData = searchParams.get('category')
     const { allProducts, isLoading } = useSelector((state) => state.products)
-
-    console.log("Products Page", allProducts)
     const [data, setData] = useState([])
 
     useEffect(() => {
@@ -25,9 +23,6 @@ const ProductsPage = () => {
             setData(d)
         }
     }, [allProducts])
-
-    console.log("data in productsPage", data)
-
 
     return (
         <>

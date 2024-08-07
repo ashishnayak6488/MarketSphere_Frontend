@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { AiOutlineArrowRight, AiOutlineMoneyCollect } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
@@ -6,7 +6,6 @@ import { MdBorderClear } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { getAllProductsShop } from "../../redux/actions/product";
-// import { DataGrid } from "@material-ui/data-grid";
 import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -58,13 +57,17 @@ const DashboardHero = () => {
             minWidth: 150,
             headerName: "Actions",
             sortable: false,
-            renderCell: (params) => (
-                <Link to={`/order/${params.id}`}>
-                    <Button>
-                        <AiOutlineArrowRight size={20} />
-                    </Button>
-                </Link>
-            ),
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Link to={`/dashboard/order/${params.id}`}>
+                            <Button>
+                                <AiOutlineArrowRight size={20} />
+                            </Button>
+                        </Link>
+                    </>
+                );
+            },
         },
     ];
 
@@ -72,10 +75,10 @@ const DashboardHero = () => {
 
     orders && orders.forEach((item) => {
         row.push({
-            id: item._id,
-            itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
-            total: "US$ " + item.totalPrice,
-            status: item.status,
+            id: item?._id,
+            itemsQty: item?.cart.reduce((acc, item) => acc + item.qty, 0),
+            total: "US$ " + item?.totalPrice,
+            status: item?.status,
         });
     });
     return (

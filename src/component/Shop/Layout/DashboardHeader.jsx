@@ -5,7 +5,6 @@ import { FiPackage, FiShoppingBag } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { BiMessageSquareDetail } from 'react-icons/bi'
-import { backend_url } from '../../../server'
 
 const DashboardHeader = () => {
 
@@ -54,7 +53,7 @@ const DashboardHeader = () => {
                             title='All Orders'
                         />
                     </Link>
-                    <Link to='/dashboard-Message' className='800px:block hidden'>
+                    <Link to='/dashboard-messages' className='800px:block hidden'>
                         <BiMessageSquareDetail
                             color='#555'
                             size={30}
@@ -63,7 +62,8 @@ const DashboardHeader = () => {
                         />
                     </Link>
                     <Link to={`/shop/${seller._id}`}>
-                        <img src={`${backend_url}${seller.avatar}`}
+                        <img
+                            src={`${seller.avatar?.url}`}
                             alt=""
                             className='w-[40px] h-[40px] rounded-full object-cover'
                         />

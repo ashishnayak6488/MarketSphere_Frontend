@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../component/layout/Header'
 import styles from '../styles/styles'
-// import { useSearchParams } from 'react-router-dom'
-// import { productData } from '../static/data'
 import ProductCard from '../component/Route/ProductCard/ProductCard'
 import { useSelector } from 'react-redux'
 import Loader from '../component/layout/Loader'
-import Footer from '../component/layout/Footer/Footer'
 
 const BestSellingPage = () => {
 

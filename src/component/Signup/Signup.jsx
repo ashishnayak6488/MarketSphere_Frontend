@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import styles from '../../styles/styles.js'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { RxAvatar } from 'react-icons/rx'
 import axios from 'axios'
 import { server } from '../../server.js'
@@ -17,22 +17,22 @@ const Signup = () => {
 
 
     const handleFileInputChange = (e) => {
-        const file = e.target.files[0];
-        setAvatar(file)
-    }
+        const reader = new FileReader();
 
-    // const navigate = useNavigate();
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setAvatar(reader.result);
+            }
+        };
+
+        reader.readAsDataURL(e.target.files[0]);
+    };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const config = { headers: { 'Content-Type': "multipart/form-data" } }
-        const newForm = new FormData();
-        newForm.append('file', avatar)
-        newForm.append('name', name)
-        newForm.append('email', email)
-        newForm.append('password', password)
 
-        axios.post(`${server}/user/create-user`, newForm, config).then((res) => {
+        axios.post(`${server}/user/create-user`, { name, email, password, avatar }).then((res) => {
             toast.success(res.data.message)
             setName('')
             setEmail('')
@@ -96,7 +96,7 @@ const Signup = () => {
                                 <span className='inline-block h-8 w-8 rounded-full overflow-hidden'>
                                     {
                                         avatar ? (
-                                            <img src={URL.createObjectURL(avatar)} alt="avatar" className='h-full w-full object-cover rounded-full' />
+                                            <img src={avatar} alt="avatar" className='h-full w-full object-cover rounded-full' />
                                         ) : (
                                             <RxAvatar className='h-8 w-8' />
                                         )

@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react'
 import AdminHeader from '../component/layout/AdminHeader.jsx'
 import AdminSidebar from '../component/Admin/layout/AdminSidebar.jsx'
-import AdminDashboardMain from '../component/Admin/AdminDashboardMain.jsx'
 import { DataGrid } from '@mui/x-data-grid'
-import { Link } from 'react-router-dom'
-import { Button } from '@mui/material'
-import { AiOutlineArrowRight } from 'react-icons/ai'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllOrdersOfAdmin } from '../redux/actions/order.js'
 

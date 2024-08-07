@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
-import { backend_url, server } from '../../server'
+import { server } from '../../server'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { AiOutlineArrowRight, AiOutlineSend } from 'react-icons/ai'
@@ -8,7 +8,6 @@ import { TfiGallery } from 'react-icons/tfi'
 import styles from '../../styles/styles'
 import socketIO from 'socket.io-client'
 import { format } from 'timeago.js'
-// import { text } from 'express'
 
 const ENDPOINT = "https://marketsphere-socket.onrender.com/"
 
@@ -20,13 +19,13 @@ const DashboardMessages = () => {
     const [conversations, setConversations] = useState([])
     const [arrivalMessage, setArrivalMessage] = useState(null)
     const [messages, setMessages] = useState([])
-    const [currentChat, setCurrentChat] = useState(null)
-    const [open, setOpen] = useState(false)
-    const [newMessage, setNewMessage] = useState('');
+    const [currentChat, setCurrentChat] = useState()
     const [userData, setUserData] = useState(null);
+    const [newMessage, setNewMessage] = useState('');
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [activeStatus, setActiveStatus] = useState(false);
     const [images, setImages] = useState();
+    const [open, setOpen] = useState(false)
 
     const scrollRef = useRef(null);
 
@@ -63,8 +62,8 @@ const DashboardMessages = () => {
 
     useEffect(() => {
         if (seller) {
-            const userId = seller?._id;
-            socketId.emit("addUser", userId)
+            const sellerId = seller?._id;
+            socketId.emit("addUser", sellerId)
             socketId.on("getUsers", (data) => {
                 setOnlineUsers(data)
             })
@@ -157,34 +156,38 @@ const DashboardMessages = () => {
 
     const handleImageUpload = async (e) => {
 
-        const file = e.target.files[0]
-        setImages(file)
+        const reader = new FileReader();
 
-        imageSendingHandler(file)
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setImages(reader.result);
+                imageSendingHandler(reader.result);
+            }
+        };
 
-    }
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
     const imageSendingHandler = async (e) => {
 
 
-        const formData = new FormData()
-
-        formData.append("images", e)
-        formData.append("sender", seller._id)
-        formData.append("text", newMessage)
-        formData.append("conversationId", currentChat._id)
-
-        const receiverId = currentChat.members.find((member) => member !== seller._id)
+        const receiverId = currentChat.members.find(
+            (member) => member !== seller._id
+        );
 
         socketId.emit("sendMessage", {
             senderId: seller._id,
             receiverId,
             images: e,
-
-        })
+        });
 
         try {
-            await axios.post(`${server}/message/create-new-message`, formData)
+            await axios.post(`${server}/message/create-new-message`, {
+                images: e,
+                sender: seller._id,
+                text: newMessage,
+                conversationId: currentChat._id,
+            })
                 .then((res) => {
                     setImages()
                     setMessages([...messages, res.data.message]);
@@ -206,7 +209,6 @@ const DashboardMessages = () => {
                 lastMessageId: seller._id,
             })
             .then((res) => {
-                console.log(res.data.conversation);
                 setNewMessage("");
             })
             .catch((error) => {
@@ -280,7 +282,7 @@ const DashboardMessages = () => {
 
 const MessageList = ({ data, index, setOpen, me, setCurrentChat, setUserData, online, setActiveStatus, isLoading }) => {
 
-    const [active, setActive] = useState(1);
+    const [active, setActive] = useState(0);
     const [user, setUser] = useState([]);
 
 
@@ -294,7 +296,6 @@ const MessageList = ({ data, index, setOpen, me, setCurrentChat, setUserData, on
 
 
     useEffect(() => {
-        // setActiveStatus(online)
 
         const userId = data.members.find((user) => user !== me)
         const getUser = async () => {
@@ -320,7 +321,8 @@ const MessageList = ({ data, index, setOpen, me, setCurrentChat, setUserData, on
             }
         >
             <div className="relative">
-                <img src={`${backend_url}${user?.avatar}`}
+                <img
+                    src={`${user?.avatar?.url}`}
                     alt=""
                     className='w-[50px] h-[50px] rounded-full border'
                 />
@@ -358,7 +360,8 @@ const SellerInbox = ({ scrollRef, setOpen, newMessage, setNewMessage, sendMessag
             <div className="w-full flex p-3 items-center justify-between bg-slate-200">
 
                 <div className='flex'>
-                    <img src={`${backend_url}${userData?.avatar}`}
+                    <img
+                        src={`${userData?.avatar?.url}`}
                         alt=""
                         className='w-[50px] h-[50px] rounded-full border'
                     />
@@ -391,7 +394,8 @@ const SellerInbox = ({ scrollRef, setOpen, newMessage, setNewMessage, sendMessag
                             <div className={`flex w-full my-2 ${item.sender === sellerId ? 'justify-end' : 'justify-start'}`} ref={scrollRef}>
                                 {
                                     item.sender !== sellerId && (
-                                        <img src={`${backend_url}${userData?.avatar}`}
+                                        <img
+                                            src={`${userData?.avatar?.url}`}
                                             alt=""
                                             className='w-[40px] h-[40px] rounded-full mr-3 border'
                                         />
@@ -400,7 +404,8 @@ const SellerInbox = ({ scrollRef, setOpen, newMessage, setNewMessage, sendMessag
 
                                 {
                                     item.images && (
-                                        <img src={`${backend_url}${item.images}`}
+                                        <img
+                                            src={`${item.images?.url}`}
                                             alt=""
                                             className='w-[300px] h-[300px] object-cover rounded-[10px] mr-2'
                                         />

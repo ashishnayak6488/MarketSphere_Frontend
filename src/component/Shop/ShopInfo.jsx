@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { backend_url, server } from '../../server'
+import { server } from '../../server'
 import styles from '../../styles/styles'
 import axios from 'axios'
 import { Link, useParams } from "react-router-dom";
@@ -9,7 +9,6 @@ import Loader from "../../component/layout/Loader";
 
 const ShopInfo = ({ isOwner }) => {
 
-    // const { seller } = useSelector((state) => state.seller)
     const { products } = useSelector((state) => state.products);
 
     const [data, setData] = useState({});
@@ -38,11 +37,13 @@ const ShopInfo = ({ isOwner }) => {
 
     }
 
-    const totalReviewsLength = products ? products.reduce((acc, product) => acc + (product.reviews?.length || 0), 0) : 0;
+    const totalReviewsLength =
+        products &&
+        products.reduce((acc, product) => acc + product.reviews.length, 0);
 
-    const totalRatings = products ? products.reduce((acc, product) => acc + (product.reviews?.reduce((sum, review) => sum + review.rating, 0) || 0), 0) : 0;
+    const totalRatings = products && products.reduce((acc, product) => acc + product.reviews.reduce((sum, review) => sum + review.rating, 0), 0);
 
-    const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength : 0;
+    const averageRating = totalRatings / totalReviewsLength || 0;
 
     return (
         <>
@@ -53,7 +54,9 @@ const ShopInfo = ({ isOwner }) => {
                     <div>
                         <div className='w-full py-5'>
                             <div className='w-full flex items-center justify-center'>
-                                <img src={`${backend_url}${data?.avatar}`} alt=""
+                                <img
+                                    src={`${data.avatar?.url}`}
+                                    alt=""
                                     className='w-[120px] h-[120px] object-cover rounded-full'
                                 />
 

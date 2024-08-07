@@ -12,12 +12,10 @@ import { AiOutlineDelete } from 'react-icons/ai';
 const WithdrawMoney = () => {
 
     const dispatch = useDispatch();
-    // const { orders } = useSelector((state) => state.order);
     const { seller } = useSelector((state) => state.seller);
 
     const [open, setOpen] = useState(false)
     const [paymentMethod, setPaymentMethod] = useState(false)
-    // const [deliveredOrder, setDeliveredOrder] = useState(null)
     const [withdrawAmount, setWithdrawAmount] = useState(null)
     const [bankInfo, setBankInfo] = useState({
         bankName: "",

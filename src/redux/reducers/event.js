@@ -1,35 +1,7 @@
-// import { createReducer } from "@reduxjs/toolkit";
-
-// const initialState = {
-//   isLoading: true,
-// };
-
-// export const EventReducer = createReducer(initialState, {
-//   EventCreateRequest: (state) => {
-//     state.isLoading = true;
-//   },
-//   EventCreateSuccess: (state, action) => {
-//     state.isLoading = false;
-//     state.Event = action.payload;
-//     state.success = true;
-//   },
-//   EventCreateFail: (state, action) => {
-//     state.isLoading = false;
-//     state.error = action.payload;
-//     state.success = false;
-//   },
-//   clearErrors: (state) => {
-//     state.error = null;
-//   },
-// });
-
 import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: true,
-  // Event: null,
-  // success: false,
-  // error: null,
 };
 
 export const eventReducer = createReducer(initialState, (builder) => {

@@ -1,6 +1,5 @@
 import React from 'react'
 import DashboardHeader from '../../component/Shop/Layout/DashboardHeader'
-import Footer from '../../component/layout/Footer/Footer'
 import ShopSettings from '../../component/Shop/ShopSettings.jsx'
 import DashboardSidebar from '../../component/Shop/Layout/DashboardSidebar.jsx'
 

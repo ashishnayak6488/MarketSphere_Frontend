@@ -3,31 +3,54 @@
 import axios from "axios";
 import { server } from "../../server";
 
-export const createEvent = (newForm) => async (dispatch) => {
-  try {
-    dispatch({
-      type: "EventCreateRequest",
-    });
+export const createEvent =
+  (
+    name,
+    description,
+    category,
+    tags,
+    originalPrice,
+    discountPrice,
+    stock,
+    images,
+    shopId,
+    start_Date,
+    Finish_Date
+  ) =>
+  async (dispatch) => {
+    try {
+      dispatch({
+        type: "EventCreateRequest",
+      });
 
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
+      // const config = { headers: { "Content-Type": "multipart/form-data" } };
 
-    const { data } = await axios.post(
-      `${server}/event/create-event`,
-      newForm,
-      config
-    );
+      const { data } = await axios.post(
+        `${server}/event/create-event`,
+        name,
+        description,
+        category,
+        tags,
+        originalPrice,
+        discountPrice,
+        stock,
+        images,
+        shopId,
+        start_Date,
+        Finish_Date
+      );
 
-    dispatch({
-      type: "EventCreateSuccess",
-      payload: data.event,
-    });
-  } catch (error) {
-    dispatch({
-      type: "EventCreateFail",
-      payload: error.response.data.message,
-    });
-  }
-};
+      dispatch({
+        type: "EventCreateSuccess",
+        payload: data.event,
+      });
+    } catch (error) {
+      dispatch({
+        type: "EventCreateFail",
+        payload: error.response.data.message,
+      });
+    }
+  };
 
 //get all Events for shop
 
@@ -60,8 +83,7 @@ export const deleteEvent = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${server}/event/delete-shop-event/${id}`,
-      { withCredentials: true }
+      `${server}/event/delete-shop-event/${id}`
     );
 
     dispatch({

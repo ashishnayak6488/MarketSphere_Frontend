@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { deleteProduct, getAllProductsShop } from '../../redux/actions/product'
-import Loader from '../layout/Loader'
 import { DataGrid } from '@mui/x-data-grid'
-import { AiOutlineDelete, AiOutlineEye } from 'react-icons/ai'
+import { AiOutlineEye } from 'react-icons/ai'
 import { Button } from '@mui/material'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -18,8 +15,6 @@ const AdminProducts = () => {
         axios.get(`${server}/product/admin-all-products`, { withCredentials: true }).then((res) => {
             setdata(res.data.products)
         })
-
-
     }, [])
 
 
@@ -82,11 +77,11 @@ const AdminProducts = () => {
     data &&
         data.forEach((item) => {
             row.push({
-                id: item._id,
-                name: item.name,
-                price: "US$ " + item.discountPrice,
-                Stock: item.stock,
-                sold: 10,
+                id: item?._id,
+                name: item?.name,
+                price: "US$ " + item?.discountPrice,
+                Stock: item?.stock,
+                sold: item?.sold_out,
             });
         });
 

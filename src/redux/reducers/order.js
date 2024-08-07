@@ -38,14 +38,14 @@ export const orderReducer = createReducer(initialState, (builder) => {
     // get all products ----- Admin
 
     .addCase("adminAllOrdersRequest", (state) => {
-      state.isLoading = true;
+      state.adminOrderLoading = true;
     })
     .addCase("adminAllOrdersSuccess", (state, action) => {
-      state.isLoading = false;
+      state.adminOrderLoading = false;
       state.adminOrders = action.payload;
     })
     .addCase("adminAllOrdersFailed", (state, action) => {
-      state.isLoading = false;
+      state.adminOrderLoading = false;
       state.error = action.payload;
     })
 
