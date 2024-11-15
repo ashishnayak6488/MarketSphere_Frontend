@@ -14,7 +14,8 @@ const AdminHeader = () => {
     return (
         <div className='w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between px-4'>
             <div>
-                <Link to='/admin/dashboard'>
+                {/* <Link to='/admin/dashboard'> */}
+                <Link to='/'>
                     <img src="https://img.freepik.com/premium-vector/abstract-modern-ecommerce-logo-design-colorful-gradient-shopping-bag-logo-template_467913-995.jpg" alt="LOGO"
                         className='h-[70px]' />
                 </Link>

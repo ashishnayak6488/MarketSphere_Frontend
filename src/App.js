@@ -57,6 +57,7 @@ import {
   AdminDashboardWithdraw,
   AdminDashboardSetting,
 } from "./routes/AdminRoutes.js";
+
 import { getAllProducts } from "./redux/actions/product.js";
 import { getAllEvents } from "./redux/actions/event.js";
 import axios from "axios";
@@ -91,6 +92,7 @@ const App = () => {
         <link
           rel="canonical"
           href="https://market-sphere-frontend.vercel.app"
+          // href="https://localhost:3000/"
         />
         <meta
           name="description"

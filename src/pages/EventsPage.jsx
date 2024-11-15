@@ -6,7 +6,9 @@ import Loader from '../component/layout/Loader'
 
 const EventsPage = () => {
 
-    const { allEvents, isLoading } = useSelector((state) => state.events)
+    const { allEvents = [], isLoading } = useSelector((state) => state.events)
+
+    console.log(allEvents?.length)
 
     return (
         <>
@@ -16,7 +18,14 @@ const EventsPage = () => {
                 ) : (
                     <div>
                         <Header activeHeading={4} />
-                        <EventCard active={true} data={allEvents && allEvents[0]} />
+                        {
+                            allEvents && allEvents.length < 1 ? (
+                                <div className='flex items-center justify-center mt-10 font-bold'>!!No Any Current Event is Running!!</div>
+                            ) : (
+
+                                <EventCard active={true} data={allEvents && allEvents[0]} />
+                            )
+                        }
                     </div>
                 )
             }

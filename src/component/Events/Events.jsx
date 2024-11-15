@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 const Events = () => {
 
-    const { allEvents, isLoading } = useSelector((state) => state.events)
+    const { allEvents = [], isLoading } = useSelector((state) => state.events)
 
 
 
@@ -20,7 +20,7 @@ const Events = () => {
 
                         <div className="w-full grid">
                             {
-                                allEvents.length !== 0 && (
+                                allEvents?.length !== 0 && (
                                     <EventCard data={allEvents && allEvents[0]} />
 
                                 )
@@ -28,7 +28,9 @@ const Events = () => {
                             <h4>
                                 {
                                     allEvents?.length === 0 && (
-                                        'No Events Have'
+                                        <div className='flex items-center justify-center font-extrabold min-h-20'>
+                                            '!!No Any Current Events Are Running!!'
+                                        </div>
                                     )
                                 }
                             </h4>

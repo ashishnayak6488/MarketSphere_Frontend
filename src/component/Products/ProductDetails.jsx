@@ -90,12 +90,16 @@ const ProductDetails = ({ data }) => {
         }
     }
 
-    const totalReiewsLength = products && products.reduce((acc, product) => acc + product.reviews.length, 0)
+    const totalReiewsLength = products && products.reduce((acc, product) => acc + product.reviews?.length, 0)
     const totalRatings = products && products.reduce((acc, product) => acc + product.reviews.reduce((sum, review) => sum + review.rating, 0), 0)
 
     const avg = totalRatings / totalReiewsLength || 0;
 
     const averageRating = avg.toFixed(2);
+
+
+    // console.log(data.reviews.length)
+    // console.log(products.reviews.length)
 
     return (
         <div className='bg-white'>
@@ -322,36 +326,41 @@ const ProductDetailsInfo = ({ data, products, totalReiewsLength, averageRating }
                 active === 2 ? (
                     <div className='w-full py-3 min-h-[40vh] flex flex-col items-center overflow-y-scroll'>
                         {
-                            data && data.reviews.map((item, index) => (
-                                <div className='w-full flex my-2'>
-                                    <img
-                                        src={`${item?.user?.avatar?.url}`}
-                                        alt=""
-                                        className='w-[50px] h-[50px] rounded-full'
-                                    />
-                                    <div className='pl-2'>
-                                        <div className="w-full flex items-center">
-                                            <h1 className='font-[500] mr-3'>
-                                                {item?.user?.name}
-                                            </h1>
-                                            <Ratings rating={data?.ratings} />
+                            data && data?.reviews && data?.reviews?.length > 0 ? (
+                                data?.reviews?.map((item, index) => (
+                                    <div className='w-full flex my-2'>
+                                        <img
+                                            src={`${item?.user?.avatar?.url}`}
+                                            alt=""
+                                            className='w-[50px] h-[50px] rounded-full'
+                                        />
+                                        <div className='pl-2'>
+                                            <div className="w-full flex items-center">
+                                                <h1 className='font-[500] mr-3'>
+                                                    {item?.user?.name}
+                                                </h1>
+                                                <Ratings rating={data?.ratings} />
+                                            </div>
+                                            <p>{item?.comment}</p>
                                         </div>
-                                        <p>{item?.comment}</p>
-                                    </div>
 
-                                </div>
-                            ))
-                        }
-                        <div className="w-full flex justify-center">
-                            {
-                                data && data.reviews.length === 0 && (
-                                    <h5 className=''>
-                                        No Reviews for this product
+                                    </div>
+                                ))
+
+                            ) : (
+                                <div className="w-full flex justify-center">
+
+                                    <h5 className='flex items-center justify-center mt-5 font-bold'>
+                                        !!No Reviews for this product!!
 
                                     </h5>
-                                )
-                            }
-                        </div>
+
+                                </div>
+
+                            )
+
+                        }
+
 
                     </div>
 

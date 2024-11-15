@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from '../../styles/styles'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -42,14 +42,43 @@ const Header = ({ activeHeading }) => {
         setSearchData(filteredProducts)
     }
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 70) {
-            setActive(true);
+
+    const searchBoxRef = useRef(null);
+    const categoryRef = useRef(null);
+
+    const handleClickOutside = (event) => {
+        if (
+            searchBoxRef.current && !searchBoxRef.current.contains(event.target) &&
+            categoryRef.current && !categoryRef.current.contains(event.target)
+        ) {
+            setSearchData(null); // Close search dropdown
+            setDropDown(false);  // Close category dropdown
         }
-        else {
-            setActive(false)
-        }
-    })
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setActive(window.scrollY > 70);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // window.addEventListener('scroll', () => {
+    //     if (window.scrollY > 70) {
+    //         setActive(true);
+    //     }
+    //     else {
+    //         setActive(false)
+    //     }
+    // })
 
     return (
 
@@ -65,7 +94,7 @@ const Header = ({ activeHeading }) => {
                     </div>
 
                     {/* Search Box */}
-                    <div className='w-[50%] relative'>
+                    <div ref={searchBoxRef} className='w-[50%] relative'>
                         <input type="text" placeholder='Search Product...' value={searchTerm} onChange={handleSearchChange} className='h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md' />
 
                         <AiOutlineSearch size={30} className='absolute right-2 top-1.5 cursor-pointer' />
@@ -76,7 +105,7 @@ const Header = ({ activeHeading }) => {
                                         searchData && searchData.map((i, index) => {
 
                                             return (
-                                                <Link to={`/product/${i._id}`}>
+                                                <Link to={`/product/${i._id}`} key={i._id}>
                                                     <div className="w-full flex items-start py-3">
                                                         <img
                                                             src={`${i.images[0]?.url}`}
@@ -112,7 +141,7 @@ const Header = ({ activeHeading }) => {
 
                     {/* categories */}
 
-                    <div onClick={() => setDropDown(!dropDown)}>
+                    <div ref={categoryRef} onClick={() => setDropDown(!dropDown)}>
                         <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block">
                             <BiMenuAltLeft size={30} className='absolute top-3 left-2' />
 
@@ -127,11 +156,6 @@ const Header = ({ activeHeading }) => {
                                     <DropDown categoriesData={categoriesData} setDropDown={setDropDown} />
                                 ) : null
                             }
-
-
-
-
-
                         </div>
                     </div>
                     {/* nav Items */}
